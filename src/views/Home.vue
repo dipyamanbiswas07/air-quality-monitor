@@ -12,50 +12,32 @@
       @click:row="rowClick"
     ></v-data-table>
     <div v-else>
-      <v-btn @click="backButton">Go back</v-btn>
-      <span>Hello you selected {{ filteredCity }}</span>
-      <v-data-table
-        :headers="headers"
-        :items="filteredGridData"
-        class="elevation-1"
-        calculate-widths
-        :disable-pagination="true"
-        hide-default-footer
-        @click:row="rowClick"
-      ></v-data-table>
+      <city-view
+        :filteredData="filteredData"
+        :filteredCity="filteredCity"
+        @backButtonClick="backButtonClick"
+      ></city-view>
     </div>
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import WebsocketService from '../plugins/websocket';
+import CityView from '../components/city-view.vue';
+import { GridHeaders } from '../components/constants';
 
-@Component
+@Component({
+  components: {
+    CityView,
+  },
+})
 export default class Home extends Vue {
   private items = [];
 
   private filteredCity = '';
 
-  private headers = [
-    {
-      text: 'City',
-      align: 'start',
-      sortable: false,
-      value: 'city',
-    },
-    {
-      text: 'AQI',
-      align: 'start',
-      sortable: true,
-      value: 'aqi',
-    },
-    {
-      text: 'Timestamp',
-      align: 'start',
-      sortable: false,
-      value: 'timestamp',
-    },
-  ];
+  private headers=GridHeaders;
 
   get filteredData(): any {
     if (this.filteredCity !== '') {
@@ -64,24 +46,20 @@ export default class Home extends Vue {
     return [];
   }
 
-  get filteredGridData(): any {
-    return this.filteredData.metrics.map((x) => ({
-      city: this.filteredCity,
-      ...x,
-    }));
-  }
-
   get gridData(): any {
     const gridData = this.items.map((x) => ({
       city: x.city,
-      aqi: x.metrics[x.metrics.length - 1].aqi.toFixed(2),
-      timestamp: x.metrics[x.metrics.length - 1].timestamp,
+      aqi: x.metrics[0].aqi.toFixed(2),
+      timestamp: x.metrics[0].timestamp,
     }));
     return gridData;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   created(): any {
-    const connection = new WebSocket('ws://city-ws.herokuapp.com');
+    const ws: any = new WebsocketService();
+    const connection = ws.initializeWebsocket('ws://city-ws.herokuapp.com');
+
     connection.onmessage = (event: any) => {
       // eslint-disable-next-line no-debugger
       const newData = JSON.parse(event.data).map((x) => ({
@@ -91,6 +69,7 @@ export default class Home extends Vue {
       newData.forEach((item): void => {
         const cityAdded = this.items.find((x: any) => x.city === item.city);
         if (cityAdded) {
+          cityAdded.metrics = [];
           cityAdded.metrics.push({ aqi: item.aqi, timestamp: item.timestamp });
         } else {
           this.items.push({
@@ -103,13 +82,14 @@ export default class Home extends Vue {
   }
 
   // eslint-disable-next-line class-methods-use-this
+
+  backButtonClick(): void {
+    this.filteredCity = '';
+  }
+
   rowClick(val): void {
     // eslint-disable-next-line no-debugger
     this.filteredCity = val.city;
-  }
-
-  backButton(): void {
-    this.filteredCity = '';
   }
 }
 </script>
