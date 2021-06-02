@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-btn @click="backButton" class="ma-2">Go back</v-btn>
-    <div>Hello you selected {{ filteredCity }}</div>
+    <h3 class="ma-2">Hello, you selected {{ filteredCity }}</h3>
     <v-data-table
       :headers="headers"
       :items="filteredGridData"
@@ -15,6 +15,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
+// eslint-disable-next-line import/no-named-default
+import { default as dayjs } from 'dayjs';
 import { GridHeaders } from './constants';
 
 @Component
@@ -26,12 +28,12 @@ export default class CityView extends Vue {
   private headers= GridHeaders;
 
   get filteredGridData(): any {
+    const filteredItems = JSON.parse(localStorage.getItem(this.filteredCity)) || [];
     // eslint-disable-next-line no-debugger
-    debugger;
-    return this.filteredData.metrics.map((x) => ({
+    return filteredItems.map((x) => ({
       city: this.filteredCity,
       aqi: x.aqi.toFixed(2),
-      timestamp: x.timestamp,
+      timestamp: dayjs(parseFloat(x.timestamp)).fromNow(),
     }));
   }
 

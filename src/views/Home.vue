@@ -13,7 +13,6 @@
     ></v-data-table>
     <div v-else>
       <city-view
-        :filteredData="filteredData"
         :filteredCity="filteredCity"
         @backButtonClick="backButtonClick"
       ></city-view>
@@ -23,6 +22,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+// eslint-disable-next-line import/no-named-default
+import { default as dayjs } from 'dayjs';
 import WebsocketService from '../plugins/websocket';
 import CityView from '../components/city-view.vue';
 import { GridHeaders } from '../components/constants';
@@ -50,7 +51,7 @@ export default class Home extends Vue {
     const gridData = this.items.map((x) => ({
       city: x.city,
       aqi: x.metrics[0].aqi.toFixed(2),
-      timestamp: x.metrics[0].timestamp,
+      timestamp: dayjs(parseFloat(x.metrics[0].timestamp)).fromNow(),
     }));
     return gridData;
   }
@@ -68,14 +69,19 @@ export default class Home extends Vue {
       }));
       newData.forEach((item): void => {
         const cityAdded = this.items.find((x: any) => x.city === item.city);
+        const metrics = { aqi: item.aqi, timestamp: item.timestamp };
         if (cityAdded) {
           cityAdded.metrics = [];
-          cityAdded.metrics.push({ aqi: item.aqi, timestamp: item.timestamp });
+          cityAdded.metrics.push(metrics);
+          const currentData = JSON.parse(localStorage.getItem(item.city)) || [];
+          currentData.push(metrics);
+          localStorage.setItem(item.city, JSON.stringify(currentData));
         } else {
           this.items.push({
             city: item.city,
-            metrics: [{ aqi: item.aqi, timestamp: item.timestamp }],
+            metrics: [metrics],
           });
+          localStorage.setItem(item.city, JSON.stringify([metrics]));
         }
       });
     };
