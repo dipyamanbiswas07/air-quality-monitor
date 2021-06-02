@@ -1,18 +1,15 @@
 <template>
-  <div>
-    <table>
-      <tr>
-        <th>City</th>
-        <th>AQI</th>
-        <th>Timestamp</th>
-      </tr>
-      <tr v-for="item in gridData" :key="item.city">
-        <td>{{ item.city }}</td>
-        <td>{{ item.data.aqi.toFixed(2) }}</td>
-        <td>{{ item.data.timestamp }}</td>
-      </tr>
-    </table>
-  </div>
+  <v-container>
+    <v-data-table
+      :headers="headers"
+      :items="gridData"
+      :items-per-page="15"
+      class="elevation-1"
+      calculate-widths
+      :disable-pagination="true"
+      hide-default-footer
+    ></v-data-table>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -22,10 +19,32 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class Home extends Vue {
   private items = [];
 
+  private headers = [
+    {
+      text: 'City',
+      align: 'start',
+      sortable: false,
+      value: 'city',
+    },
+    {
+      text: 'AQI',
+      align: 'start',
+      sortable: true,
+      value: 'aqi',
+    },
+    {
+      text: 'Timestamp',
+      align: 'start',
+      sortable: false,
+      value: 'timestamp',
+    },
+  ];
+
   get gridData(): any {
     const gridData = this.items.map((x) => ({
       city: x.city,
-      data: x.metrics[x.metrics.length - 1],
+      aqi: x.metrics[x.metrics.length - 1].aqi.toFixed(2),
+      timestamp: x.metrics[x.metrics.length - 1].timestamp,
     }));
     return gridData;
   }
@@ -38,7 +57,6 @@ export default class Home extends Vue {
         ...x,
         timestamp: Date.now(),
       }));
-
       newData.forEach((item): void => {
         const cityAdded = this.items.find((x: any) => x.city === item.city);
         if (cityAdded) {
