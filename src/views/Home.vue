@@ -1,14 +1,29 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 <template>
   <v-container>
     <v-data-table
+      v-if="filteredCity === ''"
       :headers="headers"
       :items="gridData"
-      :items-per-page="15"
       class="elevation-1"
       calculate-widths
       :disable-pagination="true"
       hide-default-footer
+      @click:row="rowClick"
     ></v-data-table>
+    <div v-else>
+      <v-btn @click="backButton">Go back</v-btn>
+      <span>Hello you selected {{ filteredCity }}</span>
+      <v-data-table
+        :headers="headers"
+        :items="filteredGridData"
+        class="elevation-1"
+        calculate-widths
+        :disable-pagination="true"
+        hide-default-footer
+        @click:row="rowClick"
+      ></v-data-table>
+    </div>
   </v-container>
 </template>
 
@@ -18,6 +33,8 @@ import { Component, Vue } from 'vue-property-decorator';
 @Component
 export default class Home extends Vue {
   private items = [];
+
+  private filteredCity = '';
 
   private headers = [
     {
@@ -40,6 +57,20 @@ export default class Home extends Vue {
     },
   ];
 
+  get filteredData(): any {
+    if (this.filteredCity !== '') {
+      return this.items.find((x) => x.city === this.filteredCity);
+    }
+    return [];
+  }
+
+  get filteredGridData(): any {
+    return this.filteredData.metrics.map((x) => ({
+      city: this.filteredCity,
+      ...x,
+    }));
+  }
+
   get gridData(): any {
     const gridData = this.items.map((x) => ({
       city: x.city,
@@ -49,7 +80,7 @@ export default class Home extends Vue {
     return gridData;
   }
 
-  created() {
+  created(): any {
     const connection = new WebSocket('ws://city-ws.herokuapp.com');
     connection.onmessage = (event: any) => {
       // eslint-disable-next-line no-debugger
@@ -69,6 +100,16 @@ export default class Home extends Vue {
         }
       });
     };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  rowClick(val): void {
+    // eslint-disable-next-line no-debugger
+    this.filteredCity = val.city;
+  }
+
+  backButton(): void {
+    this.filteredCity = '';
   }
 }
 </script>
