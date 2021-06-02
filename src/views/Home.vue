@@ -52,6 +52,14 @@ export default class Home extends Vue {
     return gridData;
   }
 
+  setStorage(item) {
+    const metrics = { aqi: item.aqi, timestamp: item.timestamp };
+    const currentData = JSON.parse(localStorage.getItem(item.city)) || [];
+    currentData.push(metrics);
+    localStorage.setItem(item.city, JSON.stringify(currentData));
+    if (item.city === this.filteredCity) { this.filteredData = currentData; }
+  }
+
   // eslint-disable-next-line class-methods-use-this
   created(): any {
     const ws: any = new WebsocketService();
@@ -66,19 +74,16 @@ export default class Home extends Vue {
       newData.forEach((item): void => {
         const cityAdded = this.items.find((x: any) => x.city === item.city);
         const metrics = { aqi: item.aqi, timestamp: item.timestamp };
+        this.setStorage(item);
+
         if (cityAdded) {
           cityAdded.metrics = [];
           cityAdded.metrics.push(metrics);
-          const currentData = JSON.parse(localStorage.getItem(item.city)) || [];
-          currentData.push(metrics);
-          if (item.city === this.filteredCity) { this.filteredData = currentData; }
-          localStorage.setItem(item.city, JSON.stringify(currentData));
         } else {
           this.items.push({
             city: item.city,
             metrics: [metrics],
           });
-          localStorage.setItem(item.city, JSON.stringify([metrics]));
         }
       });
     };
