@@ -14,7 +14,7 @@ export const GridHeaders = [
   {
     text: 'Timestamp',
     align: 'start',
-    sortable: false,
+    sortable: true,
     value: 'timestamp',
   },
 ];

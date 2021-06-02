@@ -13,6 +13,7 @@
     ></v-data-table>
     <div v-else>
       <city-view
+        :filteredData="filteredData"
         :filteredCity="filteredCity"
         @backButtonClick="backButtonClick"
       ></city-view>
@@ -38,14 +39,9 @@ export default class Home extends Vue {
 
   private filteredCity = '';
 
-  private headers=GridHeaders;
+  private filteredData = [];
 
-  get filteredData(): any {
-    if (this.filteredCity !== '') {
-      return this.items.find((x) => x.city === this.filteredCity);
-    }
-    return [];
-  }
+  private headers = GridHeaders;
 
   get gridData(): any {
     const gridData = this.items.map((x) => ({
@@ -75,6 +71,7 @@ export default class Home extends Vue {
           cityAdded.metrics.push(metrics);
           const currentData = JSON.parse(localStorage.getItem(item.city)) || [];
           currentData.push(metrics);
+          if (item.city === this.filteredCity) { this.filteredData = currentData; }
           localStorage.setItem(item.city, JSON.stringify(currentData));
         } else {
           this.items.push({
@@ -96,6 +93,7 @@ export default class Home extends Vue {
   rowClick(val): void {
     // eslint-disable-next-line no-debugger
     this.filteredCity = val.city;
+    this.filteredData = JSON.parse(localStorage.getItem(val.city)) || [];
   }
 }
 </script>

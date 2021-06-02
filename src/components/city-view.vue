@@ -28,9 +28,8 @@ export default class CityView extends Vue {
   private headers= GridHeaders;
 
   get filteredGridData(): any {
-    const filteredItems = JSON.parse(localStorage.getItem(this.filteredCity)) || [];
     // eslint-disable-next-line no-debugger
-    return filteredItems.map((x) => ({
+    return this.filteredData.map((x) => ({
       city: this.filteredCity,
       aqi: x.aqi.toFixed(2),
       timestamp: dayjs(parseFloat(x.timestamp)).fromNow(),
