@@ -10,7 +10,7 @@
       :disable-pagination="true"
       hide-default-footer
       @click:row="rowClick"
-      ><template v-slot:item.aqi="{ item }">
+      ><template v-slot:[`item.aqi`]="{ item }">
         <v-chip :color="getColor(item.aqi)">
           {{ item.aqi }}
         </v-chip>
