@@ -21,7 +21,8 @@ npm run lint
 ```
 
 
-###Development
+### Development
+```
 
 It took me around 4-5 of work to get it done from stratch.
 
@@ -34,8 +35,10 @@ I have used a standard vue boilerplate with vuetify as the UI library and chartj
 I have used netlify to host the application.
 
 
+```
 
-###Usage
+### Usage
+```
 
 The homepage shows the AQI of the cities realtime,
 
