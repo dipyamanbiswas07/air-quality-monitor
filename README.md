@@ -1,5 +1,11 @@
 # air-quality-monitor
 
+
+### Project URL
+```
+https://airqualitymonitor-dip.netlify.app/
+```
+
 ## Project setup
 ```
 npm install
