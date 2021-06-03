@@ -32,3 +32,13 @@ As future improvements we could add data segregation by time( hourly, daily, mon
 I have used a standard vue boilerplate with vuetify as the UI library and chartjs for charting.
 
 I have used netlify to host the application.
+
+
+
+###Usage
+
+The homepage shows the AQI of the cities realtime,
+
+We can deepdive into a single city by clicking the row. 
+
+The deepdive has historical data with a table view and a chart view as well.
