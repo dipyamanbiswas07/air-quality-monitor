@@ -72,7 +72,7 @@ export default class Home extends Vue {
   // eslint-disable-next-line class-methods-use-this
   created(): any {
     const ws: any = new WebsocketService();
-    const connection = ws.initializeWebsocket('ws://city-ws.herokuapp.com');
+    const connection = ws.initializeWebsocket('wss://city-ws.herokuapp.com');
 
     connection.onmessage = (event: any) => {
       // eslint-disable-next-line no-debugger
