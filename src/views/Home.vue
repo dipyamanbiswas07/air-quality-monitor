@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 <template>
   <v-container>
 
@@ -64,7 +62,7 @@ export default class Home extends Vue {
     return gridData;
   }
 
-  setStorage(item): void {
+  setStorage(item: { aqi: any; timestamp: any; city: string; }): void {
     const metrics = { aqi: item.aqi, timestamp: item.timestamp };
     const currentData = JSON.parse(localStorage.getItem(item.city)) || [];
     currentData.push(metrics);
@@ -113,7 +111,7 @@ export default class Home extends Vue {
     this.filteredCity = '';
   }
 
-  rowClick(val): void {
+  rowClick(val: { city: string; }): void {
     this.filteredCity = val.city;
     this.filteredData = JSON.parse(localStorage.getItem(val.city)) || [];
   }

@@ -23,13 +23,13 @@ export default class LineChart extends Mixins(Line) {
       },
     };
 
-    @Watch('chartData') ondatachange() {
+    @Watch('chartData') ondatachange(): void {
       // eslint-disable-next-line no-underscore-dangle
       this.$data._chart.destroy();
       this.renderChart(this.chartData, this.options);
     }
 
-    mounted() {
+    mounted(): void {
       // renderChart function renders the chart with the datacollection and options object.
       this.renderChart(this.chartData, this.options);
     }

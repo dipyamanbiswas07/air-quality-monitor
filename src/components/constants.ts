@@ -21,7 +21,7 @@ export const GridHeaders = [
 
 export const WEBSOCKET_URL = 'wss://city-ws.herokuapp.com';
 
-export function getColor(aqi) {
+export function getColor(aqi: number) {
   if (aqi > 400) return 'red darken-4';
   if (aqi > 300) return 'red lighten-1';
   if (aqi > 200) return 'orange';

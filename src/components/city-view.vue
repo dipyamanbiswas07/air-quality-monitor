@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 <template>
   <div>
     <div class="d-flex justify-space-between">
@@ -95,7 +94,7 @@ export default class CityView extends Vue {
     localStorage.removeItem(this.filteredCity);
   }
 
-  toggleClicked(type) {
+  toggleClicked(type: string): void {
     this.typeSelected = type;
   }
 }
