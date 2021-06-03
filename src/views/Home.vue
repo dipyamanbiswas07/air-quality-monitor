@@ -10,7 +10,12 @@
       :disable-pagination="true"
       hide-default-footer
       @click:row="rowClick"
-    ></v-data-table>
+      ><template v-slot:item.aqi="{ item }">
+        <v-chip :color="getColor(item.aqi)">
+          {{ item.aqi }}
+        </v-chip>
+      </template></v-data-table
+    >
     <div v-else>
       <city-view
         :filteredData="filteredData"
@@ -27,7 +32,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { default as dayjs } from 'dayjs';
 import WebsocketService from '../plugins/websocket';
 import CityView from '../components/city-view.vue';
-import { GridHeaders } from '../components/constants';
+import { GridHeaders, getColor } from '../components/constants';
 
 @Component({
   components: {
@@ -43,6 +48,8 @@ export default class Home extends Vue {
 
   private headers = GridHeaders;
 
+  private getColor = getColor;
+
   get gridData(): any {
     const gridData = this.items.map((x) => ({
       city: x.city,
@@ -52,12 +59,14 @@ export default class Home extends Vue {
     return gridData;
   }
 
-  setStorage(item) {
+  setStorage(item): void {
     const metrics = { aqi: item.aqi, timestamp: item.timestamp };
     const currentData = JSON.parse(localStorage.getItem(item.city)) || [];
     currentData.push(metrics);
     localStorage.setItem(item.city, JSON.stringify(currentData));
-    if (item.city === this.filteredCity) { this.filteredData = currentData; }
+    if (item.city === this.filteredCity) {
+      this.filteredData = currentData;
+    }
   }
 
   // eslint-disable-next-line class-methods-use-this
