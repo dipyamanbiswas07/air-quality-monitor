@@ -69,13 +69,11 @@ export default class Home extends Vue {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   created(): any {
     const ws: any = new WebsocketService();
     const connection = ws.initializeWebsocket('wss://city-ws.herokuapp.com');
 
     connection.onmessage = (event: any) => {
-      // eslint-disable-next-line no-debugger
       const newData = JSON.parse(event.data).map((x) => ({
         ...x,
         timestamp: Date.now(),
@@ -97,8 +95,6 @@ export default class Home extends Vue {
       });
     };
   }
-
-  // eslint-disable-next-line class-methods-use-this
 
   backButtonClick(): void {
     this.filteredCity = '';

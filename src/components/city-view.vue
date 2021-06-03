@@ -67,13 +67,13 @@ export default class CityView extends Vue {
     return this.filteredData.map((x) => ({
       city: this.filteredCity,
       aqi: x.aqi.toFixed(2),
-      timestamp: dayjs(parseFloat(x.timestamp)).format('DD MM YYYY hh:mm:ss'),
+      timestamp: dayjs(parseFloat(x.timestamp)).format('DD MM YYYY hh:mm:ss a'),
     }));
   }
 
   get chartData():any {
     // eslint-disable-next-line no-debugger
-    const labels = this.filteredData.map((x) => dayjs(parseFloat(x.timestamp)).format('DD MM YYYY hh:mm:ss'));
+    const labels = this.filteredData.map((x) => dayjs(parseFloat(x.timestamp)).format('DD MM YYYY hh:mm:ss a'));
     const data = this.filteredData.map((x) => x.aqi.toFixed(2));
     const datasets = [];
     datasets.push({
