@@ -30,8 +30,6 @@ export default class LineChart extends Mixins(Line) {
     }
 
     mounted() {
-      // eslint-disable-next-line no-debugger
-      debugger;
       // renderChart function renders the chart with the datacollection and options object.
       this.renderChart(this.chartData, this.options);
     }

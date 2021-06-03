@@ -63,7 +63,6 @@ export default class CityView extends Vue {
   private getColor = getColor;
 
   get filteredGridData(): any {
-    // eslint-disable-next-line no-debugger
     return this.filteredData.map((x) => ({
       city: this.filteredCity,
       aqi: x.aqi.toFixed(2),
@@ -72,7 +71,6 @@ export default class CityView extends Vue {
   }
 
   get chartData():any {
-    // eslint-disable-next-line no-debugger
     const labels = this.filteredData.map((x) => dayjs(parseFloat(x.timestamp)).format('DD MM YYYY hh:mm:ss a'));
     const data = this.filteredData.map((x) => x.aqi.toFixed(2));
     const datasets = [];

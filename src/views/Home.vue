@@ -1,6 +1,9 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 <template>
   <v-container>
+
+    <h3 v-if="noDataUpdate">Unable to update data</h3>
     <v-data-table
       v-if="filteredCity === ''"
       :headers="headers"
@@ -32,7 +35,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { default as dayjs } from 'dayjs';
 import WebsocketService from '../plugins/websocket';
 import CityView from '../components/city-view.vue';
-import { GridHeaders, getColor } from '../components/constants';
+import { GridHeaders, getColor, WEBSOCKET_URL } from '../components/constants';
 
 @Component({
   components: {
@@ -49,6 +52,8 @@ export default class Home extends Vue {
   private headers = GridHeaders;
 
   private getColor = getColor;
+
+  private noDataUpdate = false;
 
   get gridData(): any {
     const gridData = this.items.map((x) => ({
@@ -71,9 +76,10 @@ export default class Home extends Vue {
 
   created(): any {
     const ws: any = new WebsocketService();
-    const connection = ws.initializeWebsocket('wss://city-ws.herokuapp.com');
+    const connection = ws.initializeWebsocket(WEBSOCKET_URL);
 
     connection.onmessage = (event: any) => {
+      this.noDataUpdate = false;
       const newData = JSON.parse(event.data).map((x) => ({
         ...x,
         timestamp: Date.now(),
@@ -94,6 +100,13 @@ export default class Home extends Vue {
         }
       });
     };
+    connection.onopen = () => {
+      console.log('Connection is open');
+    };
+    connection.onerror = (event) => {
+      console.error('WebSocket error observed:', event);
+      this.noDataUpdate = true;
+    };
   }
 
   backButtonClick(): void {
@@ -101,7 +114,6 @@ export default class Home extends Vue {
   }
 
   rowClick(val): void {
-    // eslint-disable-next-line no-debugger
     this.filteredCity = val.city;
     this.filteredData = JSON.parse(localStorage.getItem(val.city)) || [];
   }
