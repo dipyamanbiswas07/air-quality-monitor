@@ -33,7 +33,7 @@
       calculate-widths
       :disable-pagination="true"
       hide-default-footer
-      ><template v-slot:item.aqi="{ item }">
+      ><template v-slot:[`item.aqi`]="{ item }">
         <v-chip :color="getColor(item.aqi)">
           {{ item.aqi }}
         </v-chip>
@@ -67,13 +67,13 @@ export default class CityView extends Vue {
     return this.filteredData.map((x) => ({
       city: this.filteredCity,
       aqi: x.aqi.toFixed(2),
-      timestamp: dayjs(parseFloat(x.timestamp)).fromNow(),
+      timestamp: dayjs(parseFloat(x.timestamp)).format('DD MM YYYY hh:mm:ss'),
     }));
   }
 
   get chartData():any {
     // eslint-disable-next-line no-debugger
-    const labels = this.filteredData.map((x) => dayjs(parseFloat(x.timestamp)).format('DD MM YYYY hh:ss'));
+    const labels = this.filteredData.map((x) => dayjs(parseFloat(x.timestamp)).format('DD MM YYYY hh:mm:ss'));
     const data = this.filteredData.map((x) => x.aqi.toFixed(2));
     const datasets = [];
     datasets.push({
